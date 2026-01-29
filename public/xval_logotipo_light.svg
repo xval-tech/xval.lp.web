@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="520" viewBox="0 0 1800 520" role="img" aria-label="XVAL logo">
+  <defs>
+    <linearGradient id="gLime" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#D8FF89"/>
+      <stop offset="0.55" stop-color="#B6FF4A"/>
+      <stop offset="1" stop-color="#8DFF22"/>
+    </linearGradient>
+
+    <linearGradient id="gBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#58B5FF"/>
+      <stop offset="0.55" stop-color="#2B6CFF"/>
+      <stop offset="1" stop-color="#0D4BFF"/>
+    </linearGradient>
+
+    <linearGradient id="gCyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3DF2FF"/>
+      <stop offset="1" stop-color="#00A6FF"/>
+    </linearGradient>
+
+    <linearGradient id="gBrace" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#D8FF89"/>
+      <stop offset="0.55" stop-color="#B6FF4A"/>
+      <stop offset="1" stop-color="#8DFF22"/>
+    </linearGradient>
+
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+
+    <filter id="innerEdge" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="0.7" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- ICON: stylized X + magenta dot -->
+  <g transform="translate(80,80) scale(0.92)" filter="url(#softShadow)">
+    <polygon points="40,70 150,70 220,140 110,140" fill="url(#gLime)" stroke="rgba(0,0,0,0.10)" stroke-width="2"/>
+    <polygon points="190,70 300,70 250,130 140,130" fill="url(#gLime)" stroke="rgba(0,0,0,0.10)" stroke-width="2"/>
+    <polygon points="260,70 300,70 250,130 210,130" fill="url(#gBlue)" opacity="0.98"/>
+
+    <polygon points="40,270 110,200 220,200 150,270" fill="url(#gBlue)" stroke="rgba(0,0,0,0.10)" stroke-width="2"/>
+    <polygon points="140,210 250,210 300,270 190,270" fill="url(#gBlue)" stroke="rgba(0,0,0,0.10)" stroke-width="2"/>
+
+    <polygon points="170,150 210,190 170,230 130,190" fill="url(#gCyan)" opacity="0.95"/>
+    <circle cx="326" cy="66" r="18" fill="#FF4FD8"/>
+  </g>
+
+  <!-- WORDMARK: braces + 'val' -->
+  <g transform="translate(640,120)">
+    <!-- Left brace -->
+    <path d="
+      M 70 18
+      C 42 18 38 32 38 46
+      L 38 118
+      C 38 136 26 142 12 146
+      C 26 150 38 156 38 174
+      L 38 246
+      C 38 260 42 274 70 274
+      L 104 274
+      L 104 246
+      L 82 246
+      C 70 246 66 238 66 226
+      L 66 184
+      C 66 160 52 152 30 146
+      C 52 140 66 132 66 108
+      L 66 66
+      C 66 54 70 46 82 46
+      L 104 46
+      L 104 18
+      Z" fill="url(#gBrace)" filter="url(#innerEdge)"/>
+
+    <text x="130" y="220"
+      font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial"
+      font-size="240" font-weight="900"
+      fill="#0A0A0F" stroke="rgba(10,10,15,0.12)" stroke-width="2" paint-order="stroke">
+      val
+    </text>
+
+    <!-- Right brace -->
+    <path d="
+      M 640 18
+      C 668 18 672 32 672 46
+      L 672 118
+      C 672 136 684 142 698 146
+      C 684 150 672 156 672 174
+      L 672 246
+      C 672 260 668 274 640 274
+      L 606 274
+      L 606 246
+      L 628 246
+      C 640 246 644 238 644 226
+      L 644 184
+      C 644 160 658 152 680 146
+      C 658 140 644 132 644 108
+      L 644 66
+      C 644 54 640 46 628 46
+      L 606 46
+      L 606 18
+      Z" fill="url(#gBrace)" filter="url(#innerEdge)"/>
+  </g>
+</svg>
