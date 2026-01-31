@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback,useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -1137,8 +1137,16 @@ export default function ExvalLandingPageMockNavegavel() {
   const EMAILJS_TEMPLATE_ID = import.meta.env
     .VITE_EMAILJS_TEMPLATE_ID as string;
 
-  const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY ?? '';
+ const RECAPTCHA_SITE_KEY = (import.meta.env.VITE_RECAPTCHA_SITE_KEY ?? '').trim();
 
+const handleRecaptchaChange = useCallback((token: string | null) => {
+  setRecaptchaToken(token);
+}, []);
+
+const handleRecaptchaExpired = useCallback(() => {
+  setRecaptchaToken(null);
+}, []);
+  
   async function handleSend(e?: React.FormEvent) {
     e?.preventDefault();
 
@@ -1869,27 +1877,34 @@ export default function ExvalLandingPageMockNavegavel() {
                         {form.need.length}/500
                       </div>
                     </div>
-                    <div className="mt-1 flex justify-end">
-                      <ReCAPTCHA
-                        sitekey={RECAPTCHA_SITE_KEY}
-                        theme="dark"
-                        onChange={(token) => setRecaptchaToken(token)}
-                        onExpired={() => setRecaptchaToken(null)}
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="h-12 rounded-2xl text-base font-extrabold"
-                      style={{ backgroundColor: brand.lime, color: '#000' }}
-                      disabled={sending || !recaptchaToken}
-                      title={
-                        !recaptchaToken
-                          ? 'Confirme o reCAPTCHA para habilitar'
-                          : undefined
-                      }
-                    >
-                      {sending ? 'Enviando...' : c.form_send}
-                    </Button>
+<div className="mt-1 flex justify-end">
+  {RECAPTCHA_SITE_KEY ? (
+    <ReCAPTCHA
+      key={RECAPTCHA_SITE_KEY}
+      sitekey={RECAPTCHA_SITE_KEY}
+      theme="dark"
+      size="normal"
+      onChange={handleRecaptchaChange}
+      onExpired={handleRecaptchaExpired}
+    />
+  ) : null}
+</div>
+
+<Button
+  type="submit"
+  className="h-12 rounded-2xl text-base font-extrabold"
+  style={{ backgroundColor: brand.lime, color: '#000' }}
+  disabled={sending || !RECAPTCHA_SITE_KEY || !recaptchaToken}
+  title={
+    !RECAPTCHA_SITE_KEY
+      ? 'reCAPTCHA não configurado'
+      : !recaptchaToken
+        ? 'Confirme o reCAPTCHA para habilitar'
+        : undefined
+  }
+>
+  {sending ? 'Enviando...' : c.form_send}
+</Button>
 
                     {sent === 'ok' && (
                       <div
