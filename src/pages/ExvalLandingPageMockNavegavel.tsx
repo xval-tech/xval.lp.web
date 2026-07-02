@@ -1,5 +1,5 @@
 import React, { useCallback,useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,9 +19,19 @@ import {
   Timer,
   CheckCircle2,
   ChevronRight,
+  ChevronDown,
   ArrowUpRight,
   Boxes,
   Globe,
+  Code2,
+  Smartphone,
+  Rocket,
+  Workflow,
+  Bot,
+  RefreshCcw,
+  Menu,
+  X,
+  Database,
 } from 'lucide-react';
 
 /**
@@ -33,6 +43,7 @@ type Lang = 'pt' | 'en';
 
 type Area =
   | 'Consultoria Estratégica'
+  | 'Desenvolvimento de Software'
   | 'Segurança da Informação'
   | 'Infraestrutura'
   | 'DevOps'
@@ -52,6 +63,7 @@ type BrandPalette = {
   lime: string;
   blue: string;
   magenta: string;
+  cyan: string;
   mist: string;
 };
 
@@ -62,6 +74,7 @@ const BRAND_DARK: BrandPalette = {
   lime: '#B6FF4A',
   blue: '#2B6CFF',
   magenta: '#FF4FD8',
+  cyan: '#3ED6FF',
   mist: '#F5F7FF',
 };
 
@@ -83,66 +96,6 @@ function rgba(hex: string, a: number) {
   const g = (n >> 8) & 255;
   const b = n & 255;
   return `rgba(${r},${g},${b},${a})`;
-}
-
-function TypewriterText({
-  text,
-  speedMs = 28,
-  startDelayMs = 200,
-  showCursor = true,
-}: {
-  text: string;
-  speedMs?: number;
-  startDelayMs?: number;
-  showCursor?: boolean;
-}) {
-  const [idx, setIdx] = useState(0);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    setIdx(0);
-    setReady(false);
-
-    const prefersReduced =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReduced) {
-      setIdx(text.length);
-      setReady(true);
-      return;
-    }
-
-    const t0 = window.setTimeout(() => setReady(true), startDelayMs);
-    return () => window.clearTimeout(t0);
-  }, [text, startDelayMs]);
-
-  useEffect(() => {
-    if (!ready) return;
-    if (idx >= text.length) return;
-
-    const t = window.setTimeout(() => setIdx((v) => v + 1), speedMs);
-    return () => window.clearTimeout(t);
-  }, [idx, ready, speedMs, text.length]);
-
-  const done = idx >= text.length;
-
-  return (
-    <>
-      {text.slice(0, idx)}
-      {showCursor && !done ? (
-        <motion.span
-          aria-hidden
-          className="inline-block align-baseline"
-          initial={{ opacity: 0.2 }}
-          animate={{ opacity: [0.2, 1, 0.2] }}
-          transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
-        >
-          |
-        </motion.span>
-      ) : null}
-    </>
-  );
 }
 
 // Reveal (scroll -> aparece aos poucos)
@@ -386,6 +339,7 @@ function XvalLogo({
 const AREA_LABELS = {
   pt: {
     'Consultoria Estratégica': 'Consultoria Estratégica',
+    'Desenvolvimento de Software': 'Desenvolvimento',
     'Segurança da Informação': 'Segurança da Informação',
     Infraestrutura: 'Infraestrutura',
     DevOps: 'DevOps',
@@ -393,6 +347,7 @@ const AREA_LABELS = {
   },
   en: {
     'Consultoria Estratégica': 'Strategic Consulting',
+    'Desenvolvimento de Software': 'Software Development',
     'Segurança da Informação': 'Information Security',
     Infraestrutura: 'Infrastructure',
     DevOps: 'DevOps',
@@ -406,6 +361,8 @@ function areaTheme(area: Area, brand: BrandPalette) {
   if (area === 'DevOps') return { bg: rgba(brand.lime, 0.14), fg: brand.lime };
   if (area === 'Segurança da Informação')
     return { bg: 'rgba(255,79,216,0.14)', fg: brand.magenta };
+  if (area === 'Desenvolvimento de Software')
+    return { bg: rgba(brand.cyan, 0.14), fg: brand.cyan };
   if (area === 'Consultoria Estratégica')
     return { bg: 'rgba(245,247,255,0.10)', fg: brand.mist };
 
@@ -456,6 +413,85 @@ function buildServices(): Service[] {
       description: {
         pt: 'Consultoria para preparação, adequação e auditoria, com evidências organizadas e apoio na implementação de controles e políticas.',
         en: 'Support for readiness, implementation, and audit, with organized evidence and hands-on help implementing controls and policies.',
+      },
+    },
+
+    {
+      area: 'Desenvolvimento de Software',
+      title: {
+        pt: 'Desenvolvimento Web e APIs',
+        en: 'Web Development and APIs',
+      },
+      tags: ['React', 'Node.js', 'APIs'],
+      icon: <Code2 className="h-5 w-5" />,
+      description: {
+        pt: 'Aplicações web modernas e APIs escaláveis, com arquitetura limpa, testes automatizados e CI/CD desde o primeiro commit.',
+        en: 'Modern web applications and scalable APIs, with clean architecture, automated testing, and CI/CD from the first commit.',
+      },
+    },
+    {
+      area: 'Desenvolvimento de Software',
+      title: {
+        pt: 'Aplicativos Mobile',
+        en: 'Mobile Applications',
+      },
+      tags: ['iOS', 'Android', 'React Native'],
+      icon: <Smartphone className="h-5 w-5" />,
+      description: {
+        pt: 'Apps iOS e Android com base de código única, integração com seu backend, publicação nas lojas e evolução contínua.',
+        en: 'iOS and Android apps from a single codebase, integrated with your backend, published to the stores, and continuously evolved.',
+      },
+    },
+    {
+      area: 'Desenvolvimento de Software',
+      title: {
+        pt: 'Modernização de Sistemas Legados',
+        en: 'Legacy System Modernization',
+      },
+      tags: ['Legacy', 'Refactoring'],
+      icon: <RefreshCcw className="h-5 w-5" />,
+      description: {
+        pt: 'Evolução incremental de sistemas críticos, com refatoração segura, testes de regressão e migração sem parada do negócio.',
+        en: 'Incremental evolution of critical systems, with safe refactoring, regression testing, and migration without business downtime.',
+      },
+    },
+    {
+      area: 'Desenvolvimento de Software',
+      title: {
+        pt: 'Integrações e Automação de Processos',
+        en: 'Integrations and Process Automation',
+      },
+      tags: ['APIs', 'ERP', 'Automação'],
+      icon: <Workflow className="h-5 w-5" />,
+      description: {
+        pt: 'Integração entre sistemas, APIs e ERPs com filas, webhooks e automações que eliminam trabalho manual e retrabalho.',
+        en: 'Integration across systems, APIs, and ERPs with queues, webhooks, and automations that eliminate manual work and rework.',
+      },
+    },
+    {
+      area: 'Desenvolvimento de Software',
+      title: {
+        pt: 'MVP e Produtos Digitais',
+        en: 'MVPs and Digital Products',
+      },
+      tags: ['MVP', 'Product'],
+      icon: <Rocket className="h-5 w-5" />,
+      description: {
+        pt: 'Do conceito ao produto em produção: descoberta, MVP enxuto, lançamento rápido e iteração guiada por métricas de uso.',
+        en: 'From concept to production: discovery, a lean MVP, fast launch, and iteration guided by usage metrics.',
+      },
+    },
+    {
+      area: 'Desenvolvimento de Software',
+      title: {
+        pt: 'IA Aplicada e Automação Inteligente',
+        en: 'Applied AI and Intelligent Automation',
+      },
+      tags: ['LLM', 'Copilots', 'RAG'],
+      icon: <Bot className="h-5 w-5" />,
+      description: {
+        pt: 'Copilotos, agentes e integração de LLMs aos seus fluxos de trabalho, com segurança, governança de dados e custo sob controle.',
+        en: 'Copilots, agents, and LLM integration into your workflows, with security, data governance, and cost under control.',
       },
     },
 
@@ -766,11 +802,96 @@ function buildServices(): Service[] {
 
 const AREAS: Area[] = [
   'Consultoria Estratégica',
+  'Desenvolvimento de Software',
   'Segurança da Informação',
   'Infraestrutura',
   'DevOps',
   'Banco de Dados',
 ];
+
+const AREA_ICONS: Record<Area, React.ReactNode> = {
+  'Consultoria Estratégica': <LineChart className="h-5 w-5" />,
+  'Desenvolvimento de Software': <Code2 className="h-5 w-5" />,
+  'Segurança da Informação': <ShieldCheck className="h-5 w-5" />,
+  Infraestrutura: <Server className="h-5 w-5" />,
+  DevOps: <GitBranch className="h-5 w-5" />,
+  'Banco de Dados': <Database className="h-5 w-5" />,
+};
+
+const AREA_DELIVERABLES: Record<Area, Record<Lang, string[]>> = {
+  'Consultoria Estratégica': {
+    pt: [
+      'Diagnóstico objetivo com roadmap priorizado',
+      'Plano executivo defensável no board e em auditoria',
+      'Acompanhamento da execução com indicadores',
+    ],
+    en: [
+      'Objective assessment with a prioritized roadmap',
+      'An executive plan you can defend to the board and auditors',
+      'Execution follow-up with clear indicators',
+    ],
+  },
+  'Desenvolvimento de Software': {
+    pt: [
+      'Código versionado com CI/CD, testes e revisão',
+      'Documentação e handover completo para o seu time',
+      'Roadmap de evolução do produto após a entrega',
+    ],
+    en: [
+      'Versioned code with CI/CD, tests, and review',
+      'Documentation and a full handover to your team',
+      'A product evolution roadmap after delivery',
+    ],
+  },
+  'Segurança da Informação': {
+    pt: [
+      'Relatório com evidências e priorização por risco',
+      'Plano de remediação acionável, com quick wins',
+      'Suporte na correção e validação pós-implementação',
+    ],
+    en: [
+      'Report with evidence and risk-based prioritization',
+      'Actionable remediation plan with quick wins',
+      'Hands-on remediation support and post-fix validation',
+    ],
+  },
+  Infraestrutura: {
+    pt: [
+      'Arquitetura documentada e padrões definidos',
+      'Implantação com janelas controladas e rollback',
+      'Runbooks de operação e transferência de conhecimento',
+    ],
+    en: [
+      'Documented architecture and defined standards',
+      'Deployment in controlled windows with rollback',
+      'Operational runbooks and knowledge transfer',
+    ],
+  },
+  DevOps: {
+    pt: [
+      'Pipelines e guardrails padronizados',
+      'Dashboards, alertas úteis e trilha de evidência',
+      'Time treinado para operar com autonomia',
+    ],
+    en: [
+      'Standardized pipelines and guardrails',
+      'Dashboards, useful alerts, and an evidence trail',
+      'Your team trained to operate autonomously',
+    ],
+  },
+  'Banco de Dados': {
+    pt: [
+      'Baseline de performance e plano de tuning',
+      'Rotinas de backup e alta disponibilidade validadas',
+      'Relatórios periódicos de saúde do ambiente',
+    ],
+    en: [
+      'Performance baseline and tuning plan',
+      'Validated backup and high availability routines',
+      'Recurring environment health reports',
+    ],
+  },
+};
 
 const COPY: Record<Lang, Record<string, string>> = {
   pt: {
@@ -781,30 +902,36 @@ const COPY: Record<Lang, Record<string, string>> = {
     nav_contact: 'Contato',
     cta_talk: 'Falar com a XVAL',
     cta_view_services: 'Ver serviços',
-    pill_scope: 'Estratégia, segurança, infraestrutura, DevOps e dados',
+    pill_scope: 'Desenvolvimento, segurança, infraestrutura, DevOps e dados',
     pill_highbar: 'com régua alta',
-    hero_title: 'Valor em produção, com padrão e evidência.',
+    hero_title_1: 'Do código à operação,',
+    hero_title_2: 'tecnologia que vira resultado.',
     hero_body:
-      'A XVAL entra onde o caos vira atraso, incidente e auditoria dolorosa. A gente padroniza o caminho, automatiza evidência e deixa o time entregar mais rápido, com menos risco.',
+      'A XVAL desenha, desenvolve e opera a tecnologia do seu negócio: software sob medida, infraestrutura, segurança e DevOps. Tudo com padrão, evidência e resultado mensurável, do primeiro commit à auditoria.',
     hero_cta_diag: 'Quero um diagnóstico',
     hero_cta_method: 'Ver método',
-    value_title: 'Painel de valor',
-    value_example: 'exemplo',
-    value_leadtime: 'Lead time',
-    value_leadtime_note: 'redução com pipeline padrão',
-    value_flowsec: 'Segurança no fluxo',
-    value_flowsec_big: 'evidência pronta',
-    value_flowsec_note: 'automatizada para auditoria',
-    value_reliability: 'Confiabilidade',
-    value_reliability_big: 'menos incidentes',
-    value_reliability_note: 'SLOs, runbooks e observabilidade',
-    services_title: 'Serviços, do jeito que resolve.',
+    value_title: 'Ciclo completo de tecnologia',
+    value_dev: 'Desenvolver',
+    value_dev_big: 'software sob medida',
+    value_dev_note: 'web, mobile, APIs e IA aplicada',
+    value_flowsec: 'Proteger',
+    value_flowsec_big: 'segurança no fluxo',
+    value_flowsec_note: 'evidência automatizada para auditoria',
+    value_reliability: 'Operar',
+    value_reliability_big: 'confiabilidade',
+    value_reliability_note: 'SLOs, observabilidade e resposta rápida',
+    value_speed: 'Acelerar',
+    value_speed_big: 'entrega contínua',
+    value_speed_note: 'CI/CD, IaC e rollback simples',
+    eyebrow_services: 'Serviços',
+    eyebrow_method: 'Método',
+    eyebrow_cases: 'Resultados',
+    eyebrow_about: 'Quem somos',
+    eyebrow_contact: 'Contato',
+    services_title: 'Seis frentes, uma régua.',
     services_body:
-      'Clique em um card para abrir detalhes. Filtre por área e busque por tema.',
-    filter_title: 'Filtro',
-    filter_mock: 'mock',
-    filter_all: 'Todas',
-    search_placeholder: 'Buscar por SD-WAN, ISO, IaC, Fortinet, Oracle...',
+      'Da consultoria estratégica ao código em produção. Escolha uma frente para ver os serviços e clique em um serviço para ver detalhes e entregáveis.',
+    services_count: 'serviços',
     badge_evidence: 'Entregável com evidência',
     method_title: 'Método simples, execução pesada',
     method_body:
@@ -823,6 +950,8 @@ const COPY: Record<Lang, Record<string, string>> = {
     sidebar_stack: 'stack',
     side1_t: 'Estratégia',
     side1_d: 'PDSI, estratégia de TI e ISO 27001/27701',
+    side6_t: 'Desenvolvimento',
+    side6_d: 'Web, mobile, APIs, integrações e IA aplicada',
     side2_t: 'Infraestrutura e Redes',
     side2_d: 'Cloud, SD-WAN, redes, VPNs e service desk',
     side3_t: 'Segurança',
@@ -831,10 +960,10 @@ const COPY: Record<Lang, Record<string, string>> = {
     side4_d: 'GitOps, IaC, observabilidade e SRE',
     side5_t: 'Dados',
     side5_d: 'Oracle, SQL Server e consultoria de dados',
-    cases_title: 'Cases, do tipo que dá para medir.',
+    cases_title: 'Resultados que dá para medir.',
     cases_body:
-      'Conteúdos abaixo são exemplos de como escrever case com evidência. Troque pelos seus clientes quando quiser.',
-    cases_right_t: 'O que vira case aqui',
+      'Todo engajamento começa com uma linha de base e termina com números na mesa. Estes são os tipos de resultado que perseguimos.',
+    cases_right_t: 'Como medimos sucesso',
     cases_right_d:
       'tempo de deploy, taxa de falha, MTTR, custo, cobertura de evidência e redução de risco operacional.',
     case1_t: 'GitOps com rollback simples',
@@ -849,9 +978,13 @@ const COPY: Record<Lang, Record<string, string>> = {
     case3_d:
       'Policy as code, checks de IaC e relatórios de conformidade sem esforço manual.',
     case3_a: 'Auditoria sem pânico',
+    case4_t: 'Modernização sem parar o negócio',
+    case4_d:
+      'Sistema legado evoluído por etapas, com testes de regressão e migração gradual de dados.',
+    case4_a: 'Zero downtime na virada',
     about_title: 'Sobre a XVAL',
     about_p1:
-      'Consultoria fundada por três sócios com histórico de construir e liderar práticas de estratégia, cloud, segurança, auditoria e DevOps. O foco é execução com padrão, resultado mensurável e autonomia para o cliente.',
+      'Consultoria fundada por três sócios com histórico de construir e liderar práticas de estratégia, desenvolvimento de software, cloud, segurança, auditoria e DevOps. O foco é execução com padrão, resultado mensurável e autonomia para o cliente.',
     about_p2:
       'A estética e a comunicação aqui são diretas, menos teatro, mais entrega. A marca só promete o que consegue evidenciar.',
     about_card_1_t: 'Entrega acima do esperado',
@@ -866,17 +999,19 @@ const COPY: Record<Lang, Record<string, string>> = {
     form_company: 'Empresa',
     form_need: 'O que você quer destravar?',
     form_send: 'Enviar',
-    form_note:
-      'Mock funcional, sem integração real. Dá para plugar RD, HubSpot ou formulário próprio.',
-    alert_send:
-      'Mock: aqui entraria o envio do formulário (ex: HubSpot, RD, etc).',
+    form_note: 'Retornamos em até 1 dia útil com os próximos passos.',
+    form_err_required: 'Preencha nome, e-mail e o que você quer destravar.',
+    form_err_email: 'Informe um e-mail válido.',
+    form_err_recaptcha: 'Confirme o reCAPTCHA antes de enviar.',
+    form_ok: 'Recebemos sua mensagem! Retornamos em breve.',
+    form_fail: 'Não foi possível enviar. Tente novamente.',
     footer_tagline: 'Valor em produção, com régua alta',
-    modal_subtitle: 'Mock navegável, clique fora para fechar',
+    footer_nav: 'Navegação',
+    footer_contact: 'Contato',
+    modal_deliverables: 'O que você recebe',
     modal_close: 'Fechar',
-    modal_hint:
-      'Aqui você pode colocar escopo típico, entregáveis e como isso vira evidência. O objetivo do mock é deixar a navegação e o layout prontos para você trocar o texto.',
     modal_cta: 'Quero isso na minha empresa',
-    modal_more: 'Ver mais serviços',
+    modal_more: 'Ver outros serviços',
     lang_label: 'Idioma',
   },
   en: {
@@ -887,30 +1022,36 @@ const COPY: Record<Lang, Record<string, string>> = {
     nav_contact: 'Contact',
     cta_talk: 'Talk to XVAL',
     cta_view_services: 'View services',
-    pill_scope: 'Strategy, security, infrastructure, DevOps, and data',
+    pill_scope: 'Development, security, infrastructure, DevOps, and data',
     pill_highbar: 'with a high bar',
-    hero_title: 'Value in production, with standards and evidence.',
+    hero_title_1: 'From code to operations,',
+    hero_title_2: 'technology that becomes results.',
     hero_body:
-      'XVAL steps in when chaos becomes delay, incidents, and painful audits. We standardize the path, automate evidence, and help your team ship faster with less risk.',
+      'XVAL designs, builds, and operates the technology behind your business: custom software, infrastructure, security, and DevOps. All with standards, evidence, and measurable outcomes, from the first commit to the audit.',
     hero_cta_diag: 'Request an assessment',
     hero_cta_method: 'See the method',
-    value_title: 'SLO',
-    value_example: 'example',
-    value_leadtime: 'Lead time',
-    value_leadtime_note: 'reduction with a standard pipeline',
-    value_flowsec: 'Security in the flow',
-    value_flowsec_big: 'evidence ready',
-    value_flowsec_note: 'automated for audits',
-    value_reliability: 'Reliability',
-    value_reliability_big: 'fewer incidents',
-    value_reliability_note: 'SLOs, runbooks, and observability',
-    services_title: 'Services that actually solve',
+    value_title: 'Full technology cycle',
+    value_dev: 'Build',
+    value_dev_big: 'custom software',
+    value_dev_note: 'web, mobile, APIs, and applied AI',
+    value_flowsec: 'Protect',
+    value_flowsec_big: 'security in the flow',
+    value_flowsec_note: 'automated evidence for audits',
+    value_reliability: 'Operate',
+    value_reliability_big: 'reliability',
+    value_reliability_note: 'SLOs, observability, and fast response',
+    value_speed: 'Accelerate',
+    value_speed_big: 'continuous delivery',
+    value_speed_note: 'CI/CD, IaC, and simple rollback',
+    eyebrow_services: 'Services',
+    eyebrow_method: 'Method',
+    eyebrow_cases: 'Results',
+    eyebrow_about: 'Who we are',
+    eyebrow_contact: 'Contact',
+    services_title: 'Six fronts, one bar.',
     services_body:
-      'Click a card to open details. Filter by area and search by topic.',
-    filter_title: 'Filter',
-    filter_mock: 'mock',
-    filter_all: 'All',
-    search_placeholder: 'Search for SD-WAN, ISO, IaC, Fortinet, Oracle...',
+      'From strategic consulting to code in production. Pick a front to see its services and click a service for details and deliverables.',
+    services_count: 'services',
     badge_evidence: 'Evidence-ready deliverable',
     method_title: 'Simple method, heavy execution',
     method_body:
@@ -929,6 +1070,8 @@ const COPY: Record<Lang, Record<string, string>> = {
     sidebar_stack: 'stack',
     side1_t: 'Strategy',
     side1_d: 'security master plan, IT strategy, ISO 27001/27701',
+    side6_t: 'Development',
+    side6_d: 'web, mobile, APIs, integrations, applied AI',
     side2_t: 'Infrastructure and Networks',
     side2_d: 'cloud, SD-WAN, networks, VPNs, service desk',
     side3_t: 'Security',
@@ -937,10 +1080,10 @@ const COPY: Record<Lang, Record<string, string>> = {
     side4_d: 'GitOps, IaC, observability, SRE',
     side5_t: 'Data',
     side5_d: 'Oracle, SQL Server, data consulting',
-    cases_title: 'Case studies you can measure.',
+    cases_title: 'Results you can measure.',
     cases_body:
-      'The content below is sample copy showing how to write evidence-based case studies. Swap in real clients whenever you want.',
-    cases_right_t: 'What becomes a case study',
+      'Every engagement starts with a baseline and ends with numbers on the table. These are the kinds of outcomes we chase.',
+    cases_right_t: 'How we measure success',
     cases_right_d:
       'deploy time, failure rate, MTTR, cost, evidence coverage, and reduced operational risk.',
     case1_t: 'GitOps with simple rollback',
@@ -955,9 +1098,13 @@ const COPY: Record<Lang, Record<string, string>> = {
     case3_d:
       'Policy as code, IaC checks, and compliance reporting without manual work.',
     case3_a: 'Audits without panic',
+    case4_t: 'Modernization without stopping the business',
+    case4_d:
+      'A legacy system evolved in stages, with regression testing and gradual data migration.',
+    case4_a: 'Zero downtime at cutover',
     about_title: 'About XVAL',
     about_p1:
-      'A consultancy founded by three partners with a track record of building and leading practices across strategy, cloud, security, audit, and DevOps. The focus is standards, measurable outcomes, and customer autonomy.',
+      'A consultancy founded by three partners with a track record of building and leading practices across strategy, software development, cloud, security, audit, and DevOps. The focus is standards, measurable outcomes, and customer autonomy.',
     about_p2:
       'The tone here is direct, less theater, more delivery. We only promise what we can evidence.',
     about_card_1_t: 'Delivery above expectations',
@@ -970,19 +1117,21 @@ const COPY: Record<Lang, Record<string, string>> = {
     form_name: 'Your name',
     form_email: 'Email',
     form_company: 'Company',
-    form_need: 'What you want to unblock?',
+    form_need: 'What do you want to unblock?',
     form_send: 'Send',
-    form_note:
-      'Functional mock, no real integration yet. You can plug in HubSpot, RD, or your own form.',
-    alert_send:
-      'Mock: this is where the form submit would happen (HubSpot, RD, etc).',
+    form_note: 'We reply within one business day with next steps.',
+    form_err_required: 'Fill in your name, email, and what you want to unblock.',
+    form_err_email: 'Enter a valid email address.',
+    form_err_recaptcha: 'Confirm the reCAPTCHA before sending.',
+    form_ok: 'Message received! We will get back to you shortly.',
+    form_fail: 'We could not send your message. Please try again.',
     footer_tagline: 'Value in production, high bar',
-    modal_subtitle: 'Navigable mock, click outside to close',
+    footer_nav: 'Navigation',
+    footer_contact: 'Contact',
+    modal_deliverables: 'What you get',
     modal_close: 'Close',
-    modal_hint:
-      'Here you can add typical scope, deliverables, and how this becomes evidence. The goal of this mock is to keep navigation and layout ready so you can swap the copy.',
     modal_cta: 'I want this for my company',
-    modal_more: 'View more services',
+    modal_more: 'View other services',
     lang_label: 'Language',
   },
 };
@@ -999,7 +1148,7 @@ function AreaPill({
   const cfg = areaTheme(area, brand);
   return (
     <span
-      className="inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold"
+      className="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold"
       style={{
         backgroundColor: cfg.bg,
         color: cfg.fg,
@@ -1031,79 +1180,149 @@ function NavLink({
 
 function ValuePanel({ lang, brand }: { lang: Lang; brand: BrandPalette }) {
   const c = COPY[lang];
+  const rows = [
+    {
+      k: c.value_dev,
+      big: c.value_dev_big,
+      note: c.value_dev_note,
+      icon: <Code2 className="h-5 w-5" style={{ color: brand.cyan }} />,
+      bg: rgba(brand.cyan, 0.16),
+      accent: brand.cyan,
+    },
+    {
+      k: c.value_flowsec,
+      big: c.value_flowsec_big,
+      note: c.value_flowsec_note,
+      icon: <ShieldCheck className="h-5 w-5" style={{ color: brand.magenta }} />,
+      bg: 'rgba(255,79,216,0.16)',
+      accent: brand.magenta,
+    },
+    {
+      k: c.value_reliability,
+      big: c.value_reliability_big,
+      note: c.value_reliability_note,
+      icon: <Server className="h-5 w-5" style={{ color: brand.blue }} />,
+      bg: 'rgba(43,108,255,0.16)',
+      accent: brand.blue,
+    },
+    {
+      k: c.value_speed,
+      big: c.value_speed_big,
+      note: c.value_speed_note,
+      icon: <Rocket className="h-5 w-5" style={{ color: brand.lime }} />,
+      bg: rgba(brand.lime, 0.16),
+      accent: brand.lime,
+    },
+  ];
+
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    const reduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+    const t = window.setInterval(
+      () => setIdx((v) => (v + 1) % rows.length),
+      3500,
+    );
+    return () => window.clearInterval(t);
+  }, [rows.length]);
+
+  const active = rows[idx];
+
+  const nodePos = [
+    'left-1/2 top-[10%] -translate-x-1/2 -translate-y-1/2',
+    'top-1/2 right-[10%] translate-x-1/2 -translate-y-1/2',
+    'left-1/2 bottom-[10%] -translate-x-1/2 translate-y-1/2',
+    'top-1/2 left-[10%] -translate-x-1/2 -translate-y-1/2',
+  ];
+
   return (
     <div className="rounded-[28px] border border-white/10 bg-[#0F1118] p-5 shadow-sm">
-      <div className="flex items-center justify-between"></div>
+      <div className="px-1 text-center text-xs font-bold uppercase tracking-[0.18em] text-white/45">
+        {c.value_title}
+      </div>
 
-      <div className="space-y-3">
-        <div className="rounded-3xl border border-white/10 bg-[#0A0A0F] p-4">
-          <div className="flex items-start gap-3">
-            <div
-              className="mt-1 flex h-11 w-11 items-center justify-center rounded-2xl"
-              style={{ backgroundColor: 'rgba(43,108,255,0.18)' }}
-            >
-              <Timer className="h-5 w-5" style={{ color: brand.blue }} />
-            </div>
-            <div className="min-w-0">
-              <div className="text-sm font-extrabold text-white/80">
-                {c.value_leadtime}
-              </div>
-              <div className="mt-1 text-3xl font-black tracking-tight text-white">
-                -35%
-              </div>
-              <div className="mt-1 text-sm font-semibold text-white/60">
-                {c.value_leadtime_note}
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="relative mx-auto mt-1 aspect-square w-full max-w-[380px]">
+        <motion.svg
+          viewBox="0 0 100 100"
+          className="absolute inset-0 h-full w-full"
+          style={{ transformOrigin: '50% 50%' }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}
+          aria-hidden
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="none"
+            stroke="rgba(255,255,255,0.14)"
+            strokeWidth="0.5"
+            strokeDasharray="1.4 2.8"
+          />
+        </motion.svg>
 
-        <div className="rounded-3xl border border-white/10 bg-[#0A0A0F] p-4">
-          <div className="flex items-start gap-3">
-            <div
-              className="mt-1 flex h-11 w-11 items-center justify-center rounded-2xl"
-              style={{ backgroundColor: rgba(brand.lime, 0.18) }}
-            >
-              <ShieldCheck className="h-5 w-5" style={{ color: brand.lime }} />
-            </div>
-            <div className="min-w-0">
-              <div className="text-sm font-extrabold text-white/80">
-                {c.value_flowsec}
-              </div>
-              <div className="mt-1 text-2xl font-black tracking-tight text-white">
-                {c.value_flowsec_big}
-              </div>
-              <div className="mt-1 text-sm font-semibold text-white/60">
-                {c.value_flowsec_note}
-              </div>
-            </div>
-          </div>
-        </div>
+        {rows.map((r, i) => (
+          <button
+            key={r.k}
+            onClick={() => setIdx(i)}
+            aria-label={r.k}
+            aria-pressed={i === idx}
+            className={`absolute z-10 flex h-12 w-12 items-center justify-center rounded-full border transition-all duration-300 ${nodePos[i]}`}
+            style={{
+              backgroundColor: i === idx ? r.bg : '#0A0A0F',
+              borderColor: i === idx ? r.accent : 'rgba(255,255,255,0.16)',
+              boxShadow:
+                i === idx ? `0 0 28px ${rgba(r.accent, 0.35)}` : undefined,
+            }}
+          >
+            {r.icon}
+          </button>
+        ))}
 
-        <div className="rounded-3xl border border-white/10 bg-[#0A0A0F] p-4">
-          <div className="flex items-start gap-3">
-            <div
-              className="mt-1 flex h-11 w-11 items-center justify-center rounded-2xl"
-              style={{ backgroundColor: 'rgba(255,79,216,0.18)' }}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active.k}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="max-w-[62%] text-center"
             >
-              <CheckCircle2
-                className="h-5 w-5"
-                style={{ color: brand.magenta }}
-              />
-            </div>
-            <div className="min-w-0">
-              <div className="text-sm font-extrabold text-white/80">
-                {c.value_reliability}
+              <div
+                className="text-xs font-bold uppercase tracking-[0.16em]"
+                style={{ color: active.accent }}
+              >
+                {active.k}
               </div>
-              <div className="mt-1 text-2xl font-black tracking-tight text-white">
-                {c.value_reliability_big}
+              <div className="mt-1 text-lg font-extrabold leading-tight tracking-tight text-white">
+                {active.big}
               </div>
-              <div className="mt-1 text-sm font-semibold text-white/60">
-                {c.value_reliability_note}
+              <div className="mt-1 text-xs font-semibold leading-relaxed text-white/55">
+                {active.note}
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
+      </div>
+
+      <div className="mt-2 flex justify-center gap-1.5">
+        {rows.map((r, i) => (
+          <button
+            key={r.k}
+            onClick={() => setIdx(i)}
+            aria-label={r.k}
+            className="h-1.5 rounded-full transition-all duration-300"
+            style={{
+              width: i === idx ? 18 : 6,
+              backgroundColor:
+                i === idx ? r.accent : 'rgba(255,255,255,0.18)',
+            }}
+          />
+        ))}
       </div>
     </div>
   );
@@ -1117,10 +1336,12 @@ export default function ExvalLandingPageMockNavegavel() {
   const brand = BRAND_DARK;
   const c = COPY[lang];
 
-  const [area, setArea] = useState<'Todas' | Area>('Todas');
-  const [q, setQ] = useState('');
+  const [activeArea, setActiveArea] = useState<Area>(
+    'Desenvolvimento de Software',
+  );
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Service | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -1130,7 +1351,27 @@ export default function ExvalLandingPageMockNavegavel() {
 
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState<'idle' | 'ok' | 'error'>('idle');
+  const [formError, setFormError] = useState<string | null>(null);
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+
+  const closeModal = useCallback(() => {
+    setOpen(false);
+    setSelected(null);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeModal();
+    };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open, closeModal]);
 
   const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY as string;
   const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID as string;
@@ -1152,13 +1393,20 @@ const handleRecaptchaExpired = useCallback(() => {
 
     if (sending) return;
 
-    if (!recaptchaToken) {
-      alert('Confirme o reCAPTCHA antes de enviar.');
+    setFormError(null);
+
+    if (!form.name.trim() || !form.email.trim() || !form.need.trim()) {
+      setFormError(c.form_err_required);
       return;
     }
 
-    if (!form.name.trim() || !form.email.trim() || !form.need.trim()) {
-      alert('Preencha nome, e-mail e o campo “O que você quer destravar”.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      setFormError(c.form_err_email);
+      return;
+    }
+
+    if (!recaptchaToken) {
+      setFormError(c.form_err_recaptcha);
       return;
     }
 
@@ -1192,17 +1440,19 @@ const handleRecaptchaExpired = useCallback(() => {
     }
   }
 
-  const filtered = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    return all
-      .filter((s) => (area === 'Todas' ? true : s.area === area))
-      .filter((s) => {
-        if (!needle) return true;
-        const hay =
-          `${s.title[lang]} ${s.description[lang]} ${s.tags.join(' ')}`.toLowerCase();
-        return hay.includes(needle);
-      });
-  }, [all, area, q, lang]);
+  const activeServices = useMemo(
+    () => all.filter((s) => s.area === activeArea),
+    [all, activeArea],
+  );
+
+  const pillarDesc: Record<Area, string> = {
+    'Consultoria Estratégica': c.side1_d,
+    'Desenvolvimento de Software': c.side6_d,
+    'Segurança da Informação': c.side3_d,
+    Infraestrutura: c.side2_d,
+    DevOps: c.side4_d,
+    'Banco de Dados': c.side5_d,
+  };
 
   return (
     <div
@@ -1226,11 +1476,11 @@ const handleRecaptchaExpired = useCallback(() => {
             >
               {/* Brand mark: same style as footer (badge icon + text) */}
               <div className="flex items-center gap-3">
-                <div className="hidden sm:block leading-tight">
+                <div className="leading-tight">
                   <img
                     src={LOGOMARCA_SRC}
                     alt="XVAL"
-                    className="h-9 w-auto object-contain"
+                    className="h-8 w-auto object-contain sm:h-9"
                   />
                   <div className="hidden lg:block text-xs font-semibold text-white/55">
                     {c.footer_tagline}
@@ -1251,12 +1501,12 @@ const handleRecaptchaExpired = useCallback(() => {
           <div className="flex items-center gap-2">
             <div className="hidden items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-1 lg:flex">
               <Globe className="h-4 w-4 text-white/45" />
-              <div className="text-xs font-extrabold text-white/60">
+              <div className="text-xs font-bold text-white/60">
                 {c.lang_label}
               </div>
               <button
                 onClick={() => setLang('pt')}
-                className="rounded-xl px-2 py-1 text-xs font-extrabold"
+                className="rounded-xl px-2 py-1 text-xs font-bold"
                 style={
                   lang === 'pt'
                     ? {
@@ -1270,7 +1520,7 @@ const handleRecaptchaExpired = useCallback(() => {
               </button>
               <button
                 onClick={() => setLang('en')}
-                className="rounded-xl px-2 py-1 text-xs font-extrabold"
+                className="rounded-xl px-2 py-1 text-xs font-bold"
                 style={
                   lang === 'en'
                     ? {
@@ -1294,7 +1544,7 @@ const handleRecaptchaExpired = useCallback(() => {
               </a>
             </Button>
             <Button
-              className="rounded-2xl font-extrabold"
+              className="hidden rounded-2xl font-bold sm:inline-flex"
               style={{ backgroundColor: brand.lime, color: '#000' }}
               onClick={() => {
                 const el = document.querySelector('#servicos');
@@ -1303,12 +1553,82 @@ const handleRecaptchaExpired = useCallback(() => {
             >
               {c.cta_view_services}
             </Button>
+
+            <button
+              className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/15 bg-white/5 text-white md:hidden"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Menu"
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
         </div>
+
+        {menuOpen && (
+          <div className="border-t border-white/10 bg-[#0A0A0F] px-4 py-4 md:hidden">
+            <nav className="grid gap-1">
+              {[
+                { href: '#servicos', label: c.nav_services },
+                { href: '#metodo', label: c.nav_method },
+                { href: '#cases', label: c.nav_cases },
+                { href: '#sobre', label: c.nav_about },
+                { href: '#contato', label: c.nav_contact },
+              ].map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  data-scroll
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-2xl px-3 py-3 text-base font-bold text-white/80 hover:bg-white/5 hover:text-white"
+                >
+                  {l.label}
+                </a>
+              ))}
+            </nav>
+
+            <div className="mt-3 flex items-center gap-2">
+              <Button
+                className="h-11 flex-1 rounded-2xl font-bold"
+                style={{ backgroundColor: brand.lime, color: '#000' }}
+                asChild
+              >
+                <a href="#contato" data-scroll onClick={() => setMenuOpen(false)}>
+                  {c.cta_talk}
+                </a>
+              </Button>
+
+              <div className="inline-flex items-center gap-1 rounded-2xl border border-white/10 bg-white/5 px-2 py-2">
+                <button
+                  onClick={() => setLang('pt')}
+                  className="rounded-xl px-2 py-1 text-xs font-bold"
+                  style={
+                    lang === 'pt'
+                      ? { backgroundColor: rgba(brand.lime, 0.18), color: brand.lime }
+                      : { color: 'rgba(255,255,255,0.65)' }
+                  }
+                >
+                  PT
+                </button>
+                <button
+                  onClick={() => setLang('en')}
+                  className="rounded-xl px-2 py-1 text-xs font-bold"
+                  style={
+                    lang === 'en'
+                      ? { backgroundColor: rgba(brand.lime, 0.18), color: brand.lime }
+                      : { color: 'rgba(255,255,255,0.65)' }
+                  }
+                >
+                  EN
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       <motion.section
-        className="mx-auto max-w-6xl px-4 pb-12 pt-10 md:pt-16"
+        className="mx-auto max-w-6xl px-4 pb-6 pt-8 md:pt-12"
         initial={REVEAL_INITIAL}
         whileInView={REVEAL_ANIMATE}
         viewport={REVEAL_VIEWPORT}
@@ -1318,11 +1638,11 @@ const handleRecaptchaExpired = useCallback(() => {
           <div className="md:col-span-7">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
               <Sparkles className="h-4 w-4" style={{ color: brand.magenta }} />
-              <span className="text-xs font-extrabold text-white/70">
+              <span className="text-xs font-bold text-white/70">
                 {c.pill_scope}
               </span>
               <span
-                className="ml-[-4px] text-xs font-extrabold"
+                className="ml-[-4px] text-xs font-bold"
                 style={{ color: brand.lime }}
               >
                 {c.pill_highbar}
@@ -1330,7 +1650,9 @@ const handleRecaptchaExpired = useCallback(() => {
             </div>
 
             <h1 className="mt-5 text-4xl font-black tracking-tight text-white md:text-6xl">
-              <TypewriterText text={c.hero_title} />
+              {c.hero_title_1}
+              <br className="hidden md:block" />{' '}
+              <span style={{ color: brand.lime }}>{c.hero_title_2}</span>
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 md:text-lg">
               {c.hero_body}
@@ -1338,7 +1660,7 @@ const handleRecaptchaExpired = useCallback(() => {
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Button
-                className="h-12 rounded-2xl text-base font-extrabold"
+                className="h-12 rounded-2xl text-base font-bold"
                 style={{ backgroundColor: brand.lime, color: '#000' }}
                 asChild
               >
@@ -1348,7 +1670,7 @@ const handleRecaptchaExpired = useCallback(() => {
               </Button>
               <Button
                 variant="outline"
-                className="h-12 rounded-2xl border-white/15 bg-white/5 text-base font-extrabold text-white hover:bg-white/10"
+                className="h-12 rounded-2xl border-white/15 bg-white/5 text-base font-bold text-white hover:bg-white/10"
                 asChild
               >
                 <a href="#metodo" data-scroll>
@@ -1359,20 +1681,17 @@ const handleRecaptchaExpired = useCallback(() => {
 
             <div className="mt-6 flex flex-wrap gap-2">
               {[
+                'React',
+                'Node.js',
                 'AWS',
                 'Azure',
-                'Fortinet',
-                'SD-WAN',
                 'Kubernetes',
-                'Terraform',
-                'ArgoCD',
+                'Fortinet',
                 'ISO 27001',
-                'Oracle',
-                'SQL Server',
               ].map((x) => (
                 <Badge
                   key={x}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-extrabold text-white/70"
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-white/70"
                 >
                   {x}
                 </Badge>
@@ -1384,6 +1703,24 @@ const handleRecaptchaExpired = useCallback(() => {
             <ValuePanel lang={lang} brand={brand} />
           </div>
         </div>
+
+        <div className="mt-8 flex justify-center md:mt-10">
+          <a
+            href="#servicos"
+            data-scroll
+            aria-label={c.cta_view_services}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/60 transition hover:border-white/30 hover:text-white"
+          >
+            <motion.span
+              animate={{ y: [0, 5, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex"
+              aria-hidden
+            >
+              <ChevronDown className="h-5 w-5" />
+            </motion.span>
+          </a>
+        </div>
       </motion.section>
 
       <motion.section
@@ -1394,115 +1731,115 @@ const handleRecaptchaExpired = useCallback(() => {
         viewport={REVEAL_VIEWPORT}
         transition={REVEAL_TRANSITION}
       >
-        <div className="grid gap-6 md:grid-cols-12 md:items-end">
-          <div className="md:col-span-7">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-              {c.services_title}
-            </h2>
+        <div className="max-w-3xl">
+          <div
+            className="text-xs font-bold uppercase tracking-[0.2em]"
+            style={{ color: brand.lime }}
+          >
+            {c.eyebrow_services}
           </div>
-          <div className="md:col-span-5">
-            <div className="rounded-3xl border border-white/10 bg-[#0F1118] p-5 shadow-sm">
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-sm font-extrabold text-white">
-                  {c.filter_title}
-                </div>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <button
-                  onClick={() => setArea('Todas')}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-extrabold text-white/70 hover:bg-white/10"
-                  style={
-                    area === 'Todas'
-                      ? { borderColor: rgba(brand.lime, 0.5) }
-                      : undefined
-                  }
-                >
-                  {c.filter_all}
-                </button>
-                {AREAS.map((a) => (
-                  <button
-                    key={a}
-                    onClick={() => setArea(a)}
-                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-extrabold text-white/70 hover:bg-white/10"
-                    style={
-                      area === a
-                        ? { borderColor: rgba(brand.lime, 0.5) }
-                        : undefined
-                    }
-                  >
-                    {AREA_LABELS[lang][a]}
-                  </button>
-                ))}
-              </div>
-
-              <div className="relative mt-4">
-                <Search className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-white/35" />
-                <Input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder={c.search_placeholder}
-                  className="h-11 rounded-2xl border border-white/15 bg-[#0A0A0F] pl-9 text-white placeholder:text-white/35"
-                />
-              </div>
-            </div>
-          </div>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
+            {c.services_title}
+          </h2>
+          <p className="mt-3 text-base leading-relaxed text-white/70">
+            {c.services_body}
+          </p>
         </div>
 
-        <div className="mt-7 grid gap-4 md:grid-cols-2">
-          {filtered.map((s) => {
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {AREAS.map((a) => {
+            const t = areaTheme(a, brand);
+            const active = a === activeArea;
+            const count = all.filter((s) => s.area === a).length;
+            return (
+              <button
+                key={a}
+                onClick={() => setActiveArea(a)}
+                aria-pressed={active}
+                className="group text-left"
+              >
+                <div
+                  className="flex h-full flex-col rounded-3xl border bg-[#0F1118] p-5 transition group-hover:border-white/25"
+                  style={{
+                    borderColor: active ? t.fg : 'rgba(255,255,255,0.10)',
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div
+                      className="rounded-2xl p-2.5"
+                      style={{ backgroundColor: t.bg, color: t.fg }}
+                    >
+                      {AREA_ICONS[a]}
+                    </div>
+                    <ChevronRight
+                      className="h-4 w-4 transition group-hover:translate-x-0.5"
+                      style={{
+                        color: active ? t.fg : 'rgba(255,255,255,0.35)',
+                      }}
+                    />
+                  </div>
+                  <div className="mt-4 text-base font-bold text-white">
+                    {AREA_LABELS[lang][a]}
+                  </div>
+                  <div className="mt-1 flex-1 text-sm font-medium leading-relaxed text-white/60">
+                    {pillarDesc[a]}
+                  </div>
+                  <div
+                    className="mt-3 text-xs font-bold"
+                    style={{ color: t.fg }}
+                  >
+                    {count} {c.services_count}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <motion.div
+          key={`${activeArea}-${lang}`}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
+          className="mt-6 grid gap-3 md:grid-cols-2"
+        >
+          {activeServices.map((s) => {
             const t = areaTheme(s.area, brand);
             return (
-              <motion.button
+              <button
                 key={`${s.area}-${s.title.pt}`}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.99 }}
                 onClick={() => {
                   setSelected(s);
                   setOpen(true);
                 }}
                 className="group text-left"
               >
-                <Card className="h-full rounded-3xl border border-white/10 bg-[#0F1118] shadow-sm transition group-hover:border-white/15">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="mt-1 rounded-2xl p-3"
-                          style={{ backgroundColor: t.bg, color: t.fg }}
-                        >
-                          {s.icon}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <AreaPill area={s.area} lang={lang} brand={brand} />
-                            <div className="text-xs font-semibold text-white/50">
-                              {s.tags.join(' • ')}
-                            </div>
-                          </div>
-                          <CardTitle className="mt-2 text-lg font-extrabold text-white">
-                            {s.title[lang]}
-                          </CardTitle>
-                        </div>
+                <div className="flex h-full items-start gap-4 rounded-3xl border border-white/10 bg-[#0F1118] p-5 transition group-hover:border-white/25 group-hover:bg-white/[0.03]">
+                  <div
+                    className="mt-0.5 shrink-0 rounded-2xl p-2.5"
+                    style={{ backgroundColor: t.bg, color: t.fg }}
+                  >
+                    {s.icon}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="text-base font-bold text-white">
+                        {s.title[lang]}
                       </div>
+                      <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-white/30 transition group-hover:text-white/70" />
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-sm leading-relaxed text-white/70">
+                    <div className="mt-1 text-sm leading-relaxed text-white/60">
                       {s.description[lang]}
                     </div>
-                    {/* <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-extrabold text-white/70">
-                      <CheckCircle2
-                        className="h-4 w-4"
-                        style={{ color: brand.lime }}
-                      />
-                      {c.badge_evidence}
-                    </div> */}
-                  </CardContent>
-                </Card>
-              </motion.button>
+                    <div className="mt-2 text-xs font-semibold text-white/40">
+                      {s.tags.join(' • ')}
+                    </div>
+                  </div>
+                </div>
+              </button>
             );
           })}
-        </div>
+        </motion.div>
       </motion.section>
 
       <motion.section
@@ -1513,161 +1850,78 @@ const handleRecaptchaExpired = useCallback(() => {
         viewport={REVEAL_VIEWPORT}
         transition={REVEAL_TRANSITION}
       >
-        <div className="rounded-[28px] border border-white/10 bg-[#0F1118] px-6 py-10">
-          <div className="grid gap-8 md:grid-cols-12 md:items-start">
-            <div className="md:col-span-7">
-              <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-                {c.method_title}
-              </h2>
-              <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/70">
-                {c.method_body}
-              </p>
+        <div className="rounded-[28px] border border-white/10 bg-[#0F1118] px-6 py-10 md:px-10 md:py-12">
+          <div className="max-w-3xl">
+            <div
+              className="text-xs font-bold uppercase tracking-[0.2em]"
+              style={{ color: brand.lime }}
+            >
+              {c.eyebrow_method}
+            </div>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
+              {c.method_title}
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-white/70">
+              {c.method_body}
+            </p>
+          </div>
 
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                {[
-                  {
-                    t: c.method_step1_t,
-                    d: c.method_step1_d,
-                    i: <Search className="h-4 w-4" />,
-                  },
-                  {
-                    t: c.method_step2_t,
-                    d: c.method_step2_d,
-                    i: <Boxes className="h-4 w-4" />,
-                  },
-                  {
-                    t: c.method_step3_t,
-                    d: c.method_step3_d,
-                    i: <Sparkles className="h-4 w-4" />,
-                  },
-                  {
-                    t: c.method_step4_t,
-                    d: c.method_step4_d,
-                    i: <Timer className="h-4 w-4" />,
-                  },
-                ].map((x) => (
+          <div className="relative mt-10">
+            <div
+              className="absolute left-5 top-0 h-full w-px md:left-0 md:top-5 md:h-px md:w-full"
+              style={{ backgroundColor: rgba(brand.lime, 0.2) }}
+            />
+            <div className="grid gap-8 md:grid-cols-4 md:gap-6">
+              {[
+                { t: c.method_step1_t, d: c.method_step1_d },
+                { t: c.method_step2_t, d: c.method_step2_d },
+                { t: c.method_step3_t, d: c.method_step3_d },
+                { t: c.method_step4_t, d: c.method_step4_d },
+              ].map((x, i) => (
+                <div key={x.t} className="relative flex gap-4 md:block">
                   <div
-                    key={x.t}
-                    className="rounded-3xl border border-white/10 bg-[#0A0A0F] p-4"
+                    className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-sm font-bold"
+                    style={{
+                      borderColor: rgba(brand.lime, 0.45),
+                      backgroundColor: '#0F1118',
+                      color: brand.lime,
+                    }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="rounded-2xl p-2"
-                        style={{
-                          backgroundColor: rgba(brand.lime, 0.14),
-                          color: brand.lime,
-                        }}
-                      >
-                        {x.i}
-                      </div>
-                      <div>
-                        <div className="text-sm font-extrabold text-white">
-                          {x.t}
-                        </div>
-                        <div className="mt-1 text-sm font-semibold text-white/60">
-                          {x.d}
-                        </div>
-                      </div>
+                    {String(i + 1).padStart(2, '0')}
+                  </div>
+                  <div className="md:mt-4">
+                    <div className="text-base font-bold text-white">
+                      {x.t}
+                    </div>
+                    <div className="mt-1 text-sm font-medium leading-relaxed text-white/60">
+                      {x.d}
                     </div>
                   </div>
-                ))}
-              </div>
-
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Button
-                  className="h-12 rounded-2xl text-base font-extrabold"
-                  style={{ backgroundColor: brand.lime, color: '#000' }}
-                  asChild
-                >
-                  <a href="#contato" data-scroll>
-                    {c.method_cta_plan}
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-12 rounded-2xl border-white/15 bg-white/5 text-base font-extrabold text-white hover:bg-white/10"
-                  asChild
-                >
-                  <a href="#cases" data-scroll>
-                    {c.method_cta_cases}
-                  </a>
-                </Button>
-              </div>
-            </div>
-
-            <div className="md:col-span-5">
-              <div className="rounded-3xl border border-white/10 bg-[#0A0A0F] p-6">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm font-extrabold text-white">
-                    {c.sidebar_title}
-                  </div>
                 </div>
-                <Separator className="my-4 bg-white/10" />
-
-                <div className="space-y-3">
-                  {[
-                    {
-                      t: c.side1_t,
-                      d: c.side1_d,
-                      i: <LineChart className="h-4 w-4" />,
-                      col: brand.mist,
-                      bg: 'rgba(245,247,255,0.10)',
-                    },
-                    {
-                      t: c.side2_t,
-                      d: c.side2_d,
-                      i: <Server className="h-4 w-4" />,
-                      col: brand.blue,
-                      bg: 'rgba(43,108,255,0.16)',
-                    },
-                    {
-                      t: c.side3_t,
-                      d: c.side3_d,
-                      i: <ShieldCheck className="h-4 w-4" />,
-                      col: brand.magenta,
-                      bg: 'rgba(255,79,216,0.16)',
-                    },
-                    {
-                      t: c.side4_t,
-                      d: c.side4_d,
-                      i: <GitBranch className="h-4 w-4" />,
-                      col: brand.lime,
-                      bg: rgba(brand.lime, 0.16),
-                    },
-                    {
-                      t: c.side5_t,
-                      d: c.side5_d,
-                      i: <LineChart className="h-4 w-4" />,
-                      col: 'rgba(255,255,255,0.85)',
-                      bg: 'rgba(255,255,255,0.08)',
-                    },
-                  ].map((x) => (
-                    <div
-                      key={x.t}
-                      className="rounded-3xl border border-white/10 bg-[#0F1118] p-4"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="mt-0.5 rounded-2xl p-2"
-                          style={{ backgroundColor: x.bg, color: x.col }}
-                        >
-                          {x.i}
-                        </div>
-                        <div>
-                          <div className="text-sm font-extrabold text-white">
-                            {x.t}
-                          </div>
-                          <div className="mt-1 text-sm font-semibold text-white/60">
-                            {x.d}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
+          </div>
+
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <Button
+              className="h-12 rounded-2xl text-base font-bold"
+              style={{ backgroundColor: brand.lime, color: '#000' }}
+              asChild
+            >
+              <a href="#contato" data-scroll>
+                {c.method_cta_plan}
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </a>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-12 rounded-2xl border-white/15 bg-white/5 text-base font-bold text-white hover:bg-white/10"
+              asChild
+            >
+              <a href="#cases" data-scroll>
+                {c.method_cta_cases}
+              </a>
+            </Button>
           </div>
         </div>
       </motion.section>
@@ -1682,13 +1936,22 @@ const handleRecaptchaExpired = useCallback(() => {
       >
         <div className="grid gap-6 md:grid-cols-12 md:items-end">
           <div className="md:col-span-7">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+            <div
+              className="text-xs font-bold uppercase tracking-[0.2em]"
+              style={{ color: brand.lime }}
+            >
+              {c.eyebrow_cases}
+            </div>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
               {c.cases_title}
             </h2>
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/70">
+              {c.cases_body}
+            </p>
           </div>
           <div className="md:col-span-5">
             <div className="rounded-3xl border border-white/10 bg-[#0F1118] p-5">
-              <div className="text-sm font-extrabold text-white">
+              <div className="text-sm font-bold text-white">
                 {c.cases_right_t}
               </div>
               <div className="mt-2 text-sm text-white/70">
@@ -1698,18 +1961,19 @@ const handleRecaptchaExpired = useCallback(() => {
           </div>
         </div>
 
-        <div className="mt-7 grid gap-4 md:grid-cols-3">
+        <div className="mt-7 grid gap-4 sm:grid-cols-2">
           {[
             { t: c.case1_t, d: c.case1_d, a: c.case1_a },
             { t: c.case2_t, d: c.case2_d, a: c.case2_a },
             { t: c.case3_t, d: c.case3_d, a: c.case3_a },
+            { t: c.case4_t, d: c.case4_d, a: c.case4_a },
           ].map((x) => (
             <Card
               key={x.t}
               className="rounded-3xl border border-white/10 bg-[#0F1118] shadow-sm"
             >
               <CardHeader>
-                <CardTitle className="text-lg font-extrabold text-white">
+                <CardTitle className="text-lg font-bold text-white">
                   {x.t}
                 </CardTitle>
               </CardHeader>
@@ -1717,7 +1981,7 @@ const handleRecaptchaExpired = useCallback(() => {
                 <div className="text-sm leading-relaxed text-white/70">
                   {x.d}
                 </div>
-                <div className="mt-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-extrabold text-white/80">
+                <div className="mt-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-bold text-white/80">
                   {x.a}
                 </div>
               </CardContent>
@@ -1737,7 +2001,13 @@ const handleRecaptchaExpired = useCallback(() => {
         <div className="rounded-[28px] border border-white/10 bg-[#0F1118] px-6 py-10">
           <div className="grid gap-10 md:grid-cols-12 md:items-center">
             <div className="md:col-span-7">
-              <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+              <div
+                className="text-xs font-bold uppercase tracking-[0.2em]"
+                style={{ color: brand.lime }}
+              >
+                {c.eyebrow_about}
+              </div>
+              <h2 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
                 {c.about_title}
               </h2>
               <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/70">
@@ -1772,7 +2042,7 @@ const handleRecaptchaExpired = useCallback(() => {
                       />
                     </div>
                     <div>
-                      <div className="font-extrabold text-white">
+                      <div className="font-bold text-white">
                         {c.about_card_1_t}
                       </div>
                       <div className="mt-1 text-white/70">
@@ -1791,7 +2061,7 @@ const handleRecaptchaExpired = useCallback(() => {
                       />
                     </div>
                     <div>
-                      <div className="font-extrabold text-white">
+                      <div className="font-bold text-white">
                         {c.about_card_2_t}
                       </div>
                       <div className="mt-1 text-white/70">
@@ -1823,11 +2093,20 @@ const handleRecaptchaExpired = useCallback(() => {
         >
           <div className="grid gap-8 md:grid-cols-12 md:items-center">
             <div className="md:col-span-7">
-              <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+              <div
+                className="text-xs font-bold uppercase tracking-[0.2em]"
+                style={{ color: brand.lime }}
+              >
+                {c.eyebrow_contact}
+              </div>
+              <h2 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
                 {c.contact_title}
               </h2>
               <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/70">
                 {c.contact_body}
+              </p>
+              <p className="mt-4 text-sm font-semibold text-white/60">
+                {c.form_note}
               </p>
             </div>
 
@@ -1892,7 +2171,7 @@ const handleRecaptchaExpired = useCallback(() => {
 
 <Button
   type="submit"
-  className="h-12 rounded-2xl text-base font-extrabold"
+  className="h-12 rounded-2xl text-base font-bold"
   style={{ backgroundColor: brand.lime, color: '#000' }}
   disabled={sending || !RECAPTCHA_SITE_KEY || !recaptchaToken}
   title={
@@ -1906,18 +2185,24 @@ const handleRecaptchaExpired = useCallback(() => {
   {sending ? 'Enviando...' : c.form_send}
 </Button>
 
-                    {sent === 'ok' && (
+                    {formError && (
+                      <div className="text-sm font-semibold text-red-400">
+                        {formError}
+                      </div>
+                    )}
+
+                    {sent === 'ok' && !formError && (
                       <div
                         className="text-sm font-semibold"
                         style={{ color: brand.lime }}
                       >
-                        Enviado! ✅
+                        {c.form_ok}
                       </div>
                     )}
 
-                    {sent === 'error' && (
+                    {sent === 'error' && !formError && (
                       <div className="text-sm font-semibold text-red-400">
-                        Não foi possível enviar. Tente novamente.
+                        {c.form_fail}
                       </div>
                     )}
                   </form>
@@ -1928,27 +2213,174 @@ const handleRecaptchaExpired = useCallback(() => {
         </div>
       </motion.section>
 
-      <footer className="border-t border-white/10 bg-[#0A0A0F]">
-        <div className="mx-auto max-w-6xl px-4 py-10">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-3">
-              <div>
-                <img
-                  src={LOGOMARCA_SRC}
-                  alt="XVAL"
-                  className="h-7 w-auto object-contain"
-                />
-                <div className="text-xs font-semibold text-white/55">
-                  {c.footer_tagline}
-                </div>
+      {open && selected && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={selected.title[lang]}
+          onClick={closeModal}
+        >
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="relative max-h-[88vh] w-full max-w-xl overflow-y-auto rounded-t-3xl border border-white/10 bg-[#0F1118] p-6 shadow-2xl sm:rounded-3xl sm:p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={closeModal}
+              aria-label={c.modal_close}
+              className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <div className="flex items-start gap-4 pr-10">
+              <div
+                className="rounded-2xl p-3"
+                style={{
+                  backgroundColor: areaTheme(selected.area, brand).bg,
+                  color: areaTheme(selected.area, brand).fg,
+                }}
+              >
+                {selected.icon}
+              </div>
+              <div className="min-w-0">
+                <AreaPill area={selected.area} lang={lang} brand={brand} />
+                <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
+                  {selected.title[lang]}
+                </h3>
               </div>
             </div>
-            <div className="text-sm font-semibold text-white/60">
-              <a href="https://xval.com.br/" target="_blank">
-                xval.com.br
-              </a>{' '}
-              • contato@xval.com.br
+
+            <p className="mt-4 text-base leading-relaxed text-white/75">
+              {selected.description[lang]}
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {selected.tags.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-white/70"
+                >
+                  {t}
+                </span>
+              ))}
             </div>
+
+            <Separator className="my-5 bg-white/10" />
+
+            <div className="text-sm font-bold uppercase tracking-[0.14em] text-white/50">
+              {c.modal_deliverables}
+            </div>
+            <ul className="mt-3 space-y-2">
+              {AREA_DELIVERABLES[selected.area][lang].map((d) => (
+                <li key={d} className="flex items-start gap-2 text-sm text-white/80">
+                  <CheckCircle2
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                    style={{ color: brand.lime }}
+                  />
+                  <span>{d}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Button
+                className="h-12 flex-1 rounded-2xl text-base font-bold"
+                style={{ backgroundColor: brand.lime, color: '#000' }}
+                onClick={() => {
+                  closeModal();
+                  document
+                    .querySelector('#contato')
+                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+              >
+                {c.modal_cta}
+                <ArrowUpRight className="ml-1 h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="h-12 rounded-2xl border-white/15 bg-white/5 text-base font-bold text-white hover:bg-white/10"
+                onClick={closeModal}
+              >
+                {c.modal_more}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      <footer className="border-t border-white/10 bg-[#0A0A0F]">
+        <div className="mx-auto max-w-6xl px-4 py-12">
+          <div className="grid gap-10 md:grid-cols-12">
+            <div className="md:col-span-5">
+              <img
+                src={LOGOMARCA_SRC}
+                alt="XVAL"
+                className="h-8 w-auto object-contain"
+              />
+              <div className="mt-2 text-sm font-semibold text-white/55">
+                {c.footer_tagline}
+              </div>
+              <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/50">
+                {c.pill_scope}
+              </p>
+            </div>
+
+            <div className="md:col-span-3">
+              <div className="text-xs font-bold uppercase tracking-[0.2em] text-white/40">
+                {c.footer_nav}
+              </div>
+              <nav className="mt-4 grid gap-2">
+                {[
+                  { href: '#servicos', label: c.nav_services },
+                  { href: '#metodo', label: c.nav_method },
+                  { href: '#cases', label: c.nav_cases },
+                  { href: '#sobre', label: c.nav_about },
+                  { href: '#contato', label: c.nav_contact },
+                ].map((l) => (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    data-scroll
+                    className="text-sm font-semibold text-white/60 hover:text-white"
+                  >
+                    {l.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+
+            <div className="md:col-span-4">
+              <div className="text-xs font-bold uppercase tracking-[0.2em] text-white/40">
+                {c.footer_contact}
+              </div>
+              <div className="mt-4 grid gap-2 text-sm font-semibold text-white/60">
+                <a
+                  href="mailto:contato@xval.com.br"
+                  className="hover:text-white"
+                >
+                  contato@xval.com.br
+                </a>
+                <a
+                  href="https://xval.com.br/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-white"
+                >
+                  xval.com.br
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <Separator className="my-8 bg-white/10" />
+          <div className="text-xs font-semibold text-white/40">
+            © {new Date().getFullYear()} XVAL. {c.footer_tagline}.
           </div>
         </div>
       </footer>
@@ -1956,12 +2388,12 @@ const handleRecaptchaExpired = useCallback(() => {
       <div className="mx-auto max-w-6xl px-4 pb-10 sm:hidden">
         <div className="mt-2 inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
           <Globe className="h-4 w-4 text-white/45" />
-          <div className="text-xs font-extrabold text-white/60">
+          <div className="text-xs font-bold text-white/60">
             {c.lang_label}
           </div>
           <button
             onClick={() => setLang('pt')}
-            className="rounded-xl px-2 py-1 text-xs font-extrabold"
+            className="rounded-xl px-2 py-1 text-xs font-bold"
             style={
               lang === 'pt'
                 ? { backgroundColor: rgba(brand.lime, 0.18), color: brand.lime }
@@ -1972,7 +2404,7 @@ const handleRecaptchaExpired = useCallback(() => {
           </button>
           <button
             onClick={() => setLang('en')}
-            className="rounded-xl px-2 py-1 text-xs font-extrabold"
+            className="rounded-xl px-2 py-1 text-xs font-bold"
             style={
               lang === 'en'
                 ? { backgroundColor: rgba(brand.lime, 0.18), color: brand.lime }
